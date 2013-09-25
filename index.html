@@ -1,8 +1,20 @@
 <html>
     <head>
 
+        <style>
+            .player-debug-table{
+                margin:20px 0px;
+                font-size:12px;
+            }
+
+            .player-debug-table tr td{
+                padding:2px 4px;
+            }
+        </style>
+
     </head>
     <body>
+
 
         <table>
             <tr>
@@ -23,6 +35,10 @@
             </tr>
         </table>
 
+        <div id="players">
+
+        </div>
+
         <canvas id="GameCanvas"></canvas>
         <script src="javascript/jquery.js"></script>
         <script src="javascript/Engine/GameLoop.js"></script>
@@ -30,8 +46,12 @@
         <script src="javascript/Layout/LayoutManager.js"></script>
 
         <script type="text/javascript" src="javascript/config.js"></script>
-        <script type="text/javascript" src="javascript/game.js"></script>
         <script type="text/javascript" src="javascript/player.js"></script>
         <script type="text/javascript" src="javascript/ai.js"></script>
+
+
+        <script type="text/javascript" src="javascript/game.js"></script>
+        
+        
     </body>
 </html>

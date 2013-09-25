@@ -1,18 +1,25 @@
 
 var Game = {
 
+    Players: [],
+
     SciencePoints: 3,
     ScienceBeaker: 0,
     ScienceBeakerRate : 5000 // seconds
 
 }
 
+Game.init = function () {
+
+    this.Players.push(new Player({id:1}));
+    this.Players.push(new Player({id:2, ai: true }));
+
+}
 
 
 
 
-
-var myUpdate = function (dt) {
+Game.update = function (dt) {
     // put here your update computations, relative to dt	
     // dt is time passed in the game
 
@@ -28,7 +35,7 @@ var myUpdate = function (dt) {
 
 };
 
-var myDraw = function (ctx) {
+Game.draw = function (ctx) {
     // ...
 
 
@@ -36,7 +43,8 @@ var myDraw = function (ctx) {
 
 
 
+Game.init();
 
 // Starts the Loop
-var GameLoop = new ge.GameLoop(document.getElementById("GameCanvas").getContext("2d"), myUpdate, myDraw);
+var GameLoop = new ge.GameLoop(document.getElementById("GameCanvas").getContext("2d"), Game.update, Game.draw);
 GameLoop.gameRun();
