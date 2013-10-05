@@ -1,0 +1,160 @@
+﻿html, body {
+    margin: 0px;
+    padding: 0px;
+    -webkit-user-select: none;
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    user-select: none;
+    font-family:Arial;
+    color:#efefef;
+}
+
+input,
+textarea {
+    -moz-user-select: text;
+}
+
+#game-canvas {
+    top: 0px;
+    left: 0px;
+    /*background-color:#333;*/
+    position: absolute;
+    z-index: 1;
+}
+
+#info-box-background {
+    height: 300px;
+    width: 400px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: #000;
+    z-index: 2;
+    border: 1px solid #666;
+}
+
+#game-manager-background {
+    height: 300px;
+    width: 400px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #000;
+    z-index: 2;
+    border: 1px solid #666;
+}
+
+
+
+
+
+
+
+
+
+/* Global Styles */
+
+.transparent {
+    /* Required for IE 5, 6, 7 */
+    /* ...or something to trigger hasLayout, like zoom: 1; */
+    width: 100%;
+    /* Theoretically for IE 8 & 9 (more valid) */
+    /* ...but not required as filter works too */
+    /* should come BEFORE filter */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";
+    /* This works in IE 8 & 9 too */
+    /* ... but also 5, 6, 7 */
+    filter: alpha(opacity=95);
+    /* Older than Firefox 0.9 */
+    -moz-opacity: 0.95;
+    /* Safari 1.x (pre WebKit!) */
+    -khtml-opacity: 0.95;
+    /* Modern!
+	/* Firefox 0.9+, Safari 2?, Chrome any?
+	/* Opera 9+, IE 9+ */
+    opacity: 0.95;
+}
+
+
+.game-ui-header {
+    border-bottom: 1px solid #666;
+    height: 26px;
+    
+}
+
+    .game-ui-header .title {
+        position:absolute;
+        left:5px;
+        top:5px;
+        height:25px;
+    }
+
+    .game-ui-header .hide {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        background-image: url('../Images/Icons/leftarrow.png');
+        background-size: contain;
+        height: 20px;
+        width: 26px;
+        background-repeat: no-repeat;
+    }
+
+#info-box-background .hide{
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg);
+
+    height: 18px;
+    top: 3px;
+}
+
+
+.info-box-content {
+    margin:10px;
+}
+
+.info-box-content .plus-icon {
+        background-image: url('../Images/Icons/plus.png');
+        background-size: contain;
+        height: 20px;
+        width: 26px;
+        background-repeat: no-repeat;
+}
+
+.info-box-content .tech-points div {
+    padding:5px;
+    border:1px solid #efefef;
+    float:left;
+    margin:2px 4px;
+}
+
+#technology-points-available {
+    position:absolute;
+    top:-31px;
+    right:-1px;
+    border:1px solid #666;
+    padding:5px 10px 2px;
+    font-size:18px;
+    background-color:#000;
+}
+
+    #technology-points-available .counter {
+        float:left;
+        margin-right:10px;
+    }
+
+    #technology-points-available .progress {
+        padding:10px 4px;
+        border:1px solid #999;
+        float:right;
+        
+    
+    }
+
+#info-box-technology table tr td {
+    padding:5px 0px;
+}
+

@@ -8,8 +8,6 @@
     window.requestAnimationFrame = requestAnimationFrame;
 })();
 
-var ge = {}; // game engine
-
 ge.gameTime = {  // we define just an object since 
     //  there is only one instance.
     lastTime: Date.now(),

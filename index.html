@@ -1,52 +1,198 @@
 <html>
     <head>
+      
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
+          
+        <title>JS Strategy</title>
 
-        <style>
-            .player-debug-table{
-                margin:20px 0px;
-                font-size:12px;
-            }
-
-            .player-debug-table tr td{
-                padding:2px 4px;
-            }
-        </style>
-
+        <link href="css/debug.css" rel="stylesheet" />
+        <link href="css/main.css" rel="stylesheet" />
+    
     </head>
-    <body>
+    <body style="background-color:#000;background-image:url('Images/starfield.png')">
 
 
-        <table>
+        <table style="position:absolute; top:5px; right:5px; z-index:100;">
             <tr>
                 <td>Time Passed</td>
                 <td id="dt"></td>
             </tr>
             <tr>
-                <td>Science Points</td>
-                <td id="science-points"></td>
+                <td>Mouse Coords Abs</td>
+                <td id="mouseCoords"></td>
             </tr>
             <tr>
-                <td>Beaker</td>
-                <td id="science-beaker-percentage"></td>
-            </tr>
-            <tr>
-                <td>Rate</td>
-                <td id="science-beaker-rate"></td>
+                <td>Mouse Coords Translated</td>
+                <td id="mouseCoordsDx"></td>
             </tr>
         </table>
 
-        <div id="players">
+        <div id="players" style="display:none;">
 
         </div>
 
-        <canvas id="GameCanvas"></canvas>
+        <div id="game-manager-background" class="transparent">
+            <div class="game-ui-header">
+                <div class="title"></div>
+                <div class="hide"></div>
+            </div>
+        </div>
+
+        <div id="info-box-background" class="transparent">
+            <div class="game-ui-header">
+                <div class="title">Technology</div>
+                <div class="hide"></div>
+            </div>
+
+            <div id="info-box-technology" class="info-box-content">
+                <div id="technology-points-available">
+                    <div class="counter">3</div>
+                    <div class="progress"></div>
+                </div>
+                <table>
+                    <tr>
+                        <td>
+                            <div prop="speed" class="plus-icon"></div>
+                        </td>
+                        <td>
+                            Speed
+                        </td>
+                        <td class="tech-points">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                        </td>
+                        <td class="tech-bonuses">
+                            <div></div>
+                            <div></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div prop="exploration" class="plus-icon"></div>
+                        </td>
+                        <td>
+                            Exploration
+                        </td>
+                        <td class="tech-points">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                        </td>
+                        <td class="tech-bonuses">
+                            <div></div>
+                            <div></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div prop="weapons" class="plus-icon"></div>
+                        </td>
+                        <td>
+                            Weapons
+                        </td>
+                        <td class="tech-points">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                        </td>
+                        <td class="tech-bonuses">
+                            <div></div>
+                            <div></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div prop="defenses" class="plus-icon"></div>
+                        </td>
+                        <td>
+                            Defenses
+                        </td>
+                        <td class="tech-points">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                        </td>
+                        <td class="tech-bonuses">
+                            <div></div>
+                            <div></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div prop="science" class="plus-icon"></div>
+                        </td>
+                        <td>
+                            Science
+                        </td>
+                        <td class="tech-points">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                        </td>
+                        <td class="tech-bonuses">
+                            <div></div>
+                            <div></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div prop="economy" class="plus-icon"></div>
+                        </td>
+                        <td>
+                            Economy
+                        </td>
+                        <td class="tech-points">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                        </td>
+                        <td class="tech-bonuses">
+                            <div></div>
+                            <div></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="plus-icon"></div>
+                        </td>
+                        <td>
+                            Culture
+                        </td>
+                        <td class="tech-points">
+                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                        </td>
+                        <td class="tech-bonuses">
+                            <div></div>
+                            <div></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="info-box-planet" class="info-box-content" style="display:none;">
+
+            </div>
+
+            <div id="info-box-waypoint" class="info-box-content" style="display:none;">
+
+            </div>
+            
+        </div>
+
+
+        <canvas id="game-canvas" style="display:block;"></canvas>
+
+
         <script src="javascript/jquery.js"></script>
+        <script src="javascript/Engine/GameEngine.js"></script>
+        <script src="javascript/Engine/Assets.js"></script>
         <script src="javascript/Engine/GameLoop.js"></script>
+
+        <script src="javascript/Game/base.js"></script>
+        <script src="javascript/Game/InputHandlers/mouse.js"></script>
+        <script src="javascript/Game/InputHandlers/keyboard.js"></script>
+        <script src="javascript/Game/Utilities/math.js"></script>
+        <script src="javascript/Game/Utilities/management.js"></script>
+        <script src="javascript/Game/Utilities/gameobject.js"></script>
+        <script src="javascript/Game/GameObjects/path.js"></script>
+        <script src="javascript/Game/GameObjects/ship.js"></script>
+        <script src="javascript/Game/GameObjects/waypoint.js"></script>        
+
 
         <script src="javascript/Layout/LayoutManager.js"></script>
 
         <script type="text/javascript" src="javascript/config.js"></script>
         <script type="text/javascript" src="javascript/player.js"></script>
+        <script type="text/javascript"src="javascript/planet.js"></script>
         <script type="text/javascript" src="javascript/ai.js"></script>
 
 
