@@ -61,8 +61,8 @@ Game.InputHandler.Mouse.MouseClickUIHanlder = function (x, y) {
         Player.planets.planetArray[i].mouse.checkOver(x, y, true);
     }
 
-    for (var i = 0; i < Player.planets.planetArray.length; i++) {
-        Player.paths.pathArray[i].mouse.checkOver(x, y, true);
+    for (var i = 0; i < Player.paths.pathArray.length; i++) {
+        Player.paths.pathArray[i].checkOver(x, y, true);
     }
 
 }
@@ -81,7 +81,7 @@ Game.InputHandler.Mouse.MouseMoveUIHandler = function (x, y) {
     }
 
     for (var i = 0; i < Player.planets.planetArray.length; i++) {
-        Player.paths.pathArray[i].mouse.checkOver(x, y);
+        Player.paths.pathArray[i].checkOver(x, y);
     }
 
 }

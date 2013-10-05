@@ -19,26 +19,38 @@
 
     this.mouse = {
         isOver: false,
-        checkOver: function (x, y, ClickEvent) {
+        checkOver: function (x, y, ClickEvent, pathHandler) {
+
+            if (!pathHandler.explored) {
+
+                if (Game.Utilities.Math.lineIntersect(self.planet1.location.x, self.planet1.location.y, self.planet2.location.x, self.planet2.location.y, x, y, x + 1, y + 1)) {
+                    self.setOver();
+                }
+
+                var midpoint_x = Game.Utilities.Math.pointBetweenLine(self.planet1.location.x, self.planet2.location.x, .8);
+                var midpoint_y = Game.Utilities.Math.pointBetweenLine(self.planet1.location.y, self.planet2.location.y, .8);
+
+                var mouseOverLock = x > midpoint_x - self.unlockImage.width / 2 && y > midpoint_y - self.unlockImage.height / 2 && x < midpoint_x - self.unlockImage.width / 2 + self.unlockImage.width && y < midpoint_y - self.unlockImage.height / 2 + self.unlockImage.height;
 
 
-            if (Game.Utilities.Math.lineIntersect(self.planet1.location.x, self.planet1.location.y, self.planet2.location.x, self.planet2.location.y,x,y,x+1,y+1)) {
-                self.setOver();
-            }
 
-            var midpoint_x = Game.Utilities.Math.pointBetweenLine(self.planet1.location.x, self.planet2.location.x, .8);
-            var midpoint_y = Game.Utilities.Math.pointBetweenLine(self.planet1.location.y, self.planet2.location.y, .8);
+                console.log("checking path for " + self.id + " : (" + midpoint_x + ", " + midpoint_y + ") - " + mouseOverLock);
 
-            // need to check for collision and click event on the unlock icon
-            if (ClickEvent && (x > midpoint_x - self.unlockImage.width / 2 && y > midpoint_y - self.unlockImage.height / 2 && x < midpoint_x - self.unlockImage.width / 2 + self.unlockImage.width && y < midpoint_y - self.unlockImage.height / 2 + self.unlockImage.height)) {
-                self.startExploring = true;
+
+
+                // need to check for collision and click event on the unlock icon
+                if (ClickEvent && mouseOverLock) {
+                    console.log("Exploring started");
+                    //self.startExploring = true;
+                    pathHandler.explore();
+                }
             }
 
         }
     }
 }
 
-Path.prototype.draw = function (ctx) {
+Path.prototype.draw = function (ctx, isExplored, isBeingExplored, distanceExplored) {
 
     //if (this.active) {
 
@@ -52,9 +64,10 @@ Path.prototype.draw = function (ctx) {
         ctx.lineWidth = 6;
 
 
-        ctx.strokeStyle = this.explored ? '#efefef' : '#999';
+        
+        ctx.strokeStyle = isExplored ? '#efefef' : '#999';
 
-        if (this.highlight && !this.explored) {
+        if (this.highlight && !isExplored && !isBeingExplored) {
             ctx.strokeStyle = '#efefef';
             ctx.lineWidth = 10;
             ctx.stroke();
@@ -67,16 +80,13 @@ Path.prototype.draw = function (ctx) {
         }
 
 
-        
-
-    // This will show the animcation of exploring
-    
-        if (this.startExploring) {
+        // This will show the animcation of exploring
+        if (isBeingExplored) {
             ctx.beginPath();
             ctx.moveTo(this.planet1.location.x, this.planet1.location.y);
             ctx.lineTo(
-                Game.Utilities.Math.pointBetweenLine(this.planet1.location.x, this.planet2.location.x, this.distanceExplored / this.length),
-                Game.Utilities.Math.pointBetweenLine(this.planet1.location.y, this.planet2.location.y, this.distanceExplored / this.length)
+                Game.Utilities.Math.pointBetweenLine(this.planet1.location.x, this.planet2.location.x, distanceExplored / this.length),
+                Game.Utilities.Math.pointBetweenLine(this.planet1.location.y, this.planet2.location.y, distanceExplored / this.length)
             );
             ctx.lineWidth = 6;
             ctx.strokeStyle = 'yellow';
@@ -85,9 +95,9 @@ Path.prototype.draw = function (ctx) {
 
 
         // Debug id
-        //ctx.fillStyle = 'orange';
-        //ctx.font = "bold 16px sans-serif";
-        //ctx.fillText(this.id, midpoint_x, midpoint_y);
+        ctx.fillStyle = 'orange';
+        ctx.font = "bold 16px sans-serif";
+        ctx.fillText(this.id, midpoint_x, midpoint_y);
 
     //}
 
@@ -109,17 +119,22 @@ Path.prototype.update = function (dt) {
         this.startExploring = false;
         this.explored = true;
         
-
+        
         this.planet1.player.owner.planets.set(this.planet2);
 
     }
 
 }
 
+// Helpers
 Path.prototype.setOver = function () {
     var self = this;
     if (this.highlight == false) {
         this.highlight = true;
         setTimeout(function () { self.highlight = false; }, 3000);
     }
+}
+
+Path.prototype.getOppositePlanet = function (planet) {
+    return this.planet1.id == planet.id ? this.planet2 : this.planet1;
 }

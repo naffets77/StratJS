@@ -14,7 +14,7 @@ function Player(options) {
     this.planets = new PlayerUtilities.planetHandler({ player: this });
     this.ships = new PlayerUtilities.shipHandler({ shipConfig: options.shipConfig });
     this.waypoints = new PlayerUtilities.waypointHandler();
-    this.paths = new PlayerUtilities.pathHandler();
+    this.paths = new PlayerUtilities.pathHandler({ player: this });
 
 
 
@@ -175,18 +175,85 @@ var PlayerUtilities = {
                 var path = planet.paths.pathsArray[i];
 
                 if (path.defaultActive) {
-                    player.paths.add(path);
+                    player.paths.add(path, planet);
                 }
 
             }
 
         }
-    },
-    pathHandler: function(){
-        this.pathArray = [];
-        this.add  = function(path){
-            this.pathArray.push(path);
+        this.contains = function (planet) {
+            
+            var result = false;
+            for (var i = 0; i < this.planetArray.length; i++) {
+                if (planet.id == this.planetArray[i].id) {
+                    result = true;
+                    break;
+                }
+            }
+
+            return result;
         }
+    },
+    pathHandler: function (options) {
+
+        var self = this;
+
+        this.pathArray = [];
+        this.player = options.player;
+        this.pathsBeingExplored = [];
+        this.add  = function(path, planet){
+            this.pathArray.push(new pathHandler({path:path, planet: planet}));
+        }
+
+        // Private object used to manage paths
+        function pathHandler(options) {
+            this.path = options.path;
+            this.planet = options.planet;
+            
+            this.explored = false;
+            this.exploring = false;
+            this.distanceExplored = 0;
+            this.exploreRate = .05;
+            this.exploredPlanet = null;
+
+            this.explore = function () {
+                this.exploring = true;
+            }
+
+            this.checkOver = function (x, y, mouseClick) {
+
+                if (this.explored == false) {
+                    this.path.mouse.checkOver(x, y, mouseClick, this);
+                }
+
+            }
+
+            this.update = function (dt) {
+
+
+                if (this.exploring) {
+                    //console.log("Explored: " + this.distanceExplored + " of " + this.path.length + " (" + this.distanceExplored / this.path.length + ")");
+                    this.distanceExplored += this.exploreRate * dt;
+                }
+
+                if (this.exploring && this.distanceExplored > this.path.length) {
+                    this.startExploring = false;
+                    this.explored = true;
+                    this.exploring = false;
+
+                    self.player.planets.set(this.path.getOppositePlanet(this.planet));
+                }
+
+                this.path.update(dt);
+            }
+
+            this.draw = function (ctx) {
+                this.path.draw(ctx, this.explored, this.exploring, this.distanceExplored);
+            }
+
+
+        }
+
     },
     waypointHandler: function () {
 
