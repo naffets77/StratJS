@@ -1,34 +1,40 @@
 ﻿
+#players {
+    float: right;
+    width: 300px;
+    position: relative;
+    margin-top: 50px;
+    margin-right: 170px;
+}
 
+.player-debug-table {
+    margin: 20px 0px;
+    font-size: 12px;
+    position: absolute;
+    z-index: 5;
+    color: #fff;
+}
 
-            .player-debug-table{
-                margin:20px 0px;
-                font-size:12px;
-                position:absolute;
-                z-index:5;
-                color:#fff;
-            }
+    .player-debug-table tr td {
+        padding: 2px 4px;
+    }
 
-            .player-debug-table tr td{
-                padding:2px 4px;
-            }
+    .player-debug-table tr.header td {
+        font-weight: bold;
+        padding-top: 10px;
+        padding-left: 0px;
+    }
 
-                .player-debug-table tr.header td {
-                    font-weight:bold;
-                    padding-top:10px;
-                    padding-left:0px;
-                }
+    .player-debug-table tr td span {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+    }
 
-                    .player-debug-table tr td span {
-                        cursor:pointer;
-                        font-weight:bold;
-                        font-size:14px;
-                    }
+#player-debug-table_0 {
+    left: 0px;
+}
 
-            #player-debug-table_0 {
-                left:0px;
-            }
-
-            #player-debug-table_1 {
-                left:200px;
-            }
+#player-debug-table_1 {
+    left: 230px;
+}

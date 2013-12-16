@@ -34,7 +34,7 @@ Game.Utilities.GameObject.getClosest = function (obj, objects, numberOf) {
 
 }
 
-// All objectes expected to have a path handler
+// All objects expected to have a path handler
 Game.Utilities.GameObject.objectsConnected = function (objects) {
 
     // Found nodes
@@ -44,7 +44,7 @@ Game.Utilities.GameObject.objectsConnected = function (objects) {
     // Paths to search
     var searchPaths = [];
 
-    // Don't search the same path twice (may use this to optimize.... but i don't htink it'll be enough to need it)
+    // Don't search the same path twice (may use this to optimize.... but i don't think it'll be enough to need it)
     var pathsSearched = [];
 
     // Starting location
@@ -80,7 +80,7 @@ Game.Utilities.GameObject.objectsConnected = function (objects) {
 
     //console.log(foundIds.sort());
 
-    return foundObjects.length ==  objects.length
+    return foundObjects.length == objects.length
 
 }
 
@@ -112,3 +112,101 @@ Game.Utilities.GameObject.getPlanetToPrune = function (planets, skipList) {
     return result;
 
 }
+
+// Given two planets, gives combination of ways to travel between planets
+Game.Utilities.GameObject.getPlanetsToTravel = function (player, startPlanet, endPlanet) {
+
+    var pathsFound = [];
+
+    var firstNode = new pathFinderNode();
+    firstNode.head = startPlanet;
+    
+    var openList = [firstNode];
+    var foundList = [];
+    var processedList = [];
+
+    while (openList.length > 0) {
+
+        // start somewhere
+        var currentPathFinder = openList.pop();
+
+        if (currentPathFinder.head == endPlanet) {
+            foundList.push(currentPathFinder);
+        }
+
+        openList = openList.concat(currentPathFinder.processHead());
+
+        processedList.push(currentPathFinder);
+
+    }
+
+    // we should have a list of foundList ... order by length and return the top 5?
+
+    return foundList;
+
+
+
+
+    function pathFinderNode() {
+        this.planetList = []; // list of planets in path
+        this.head = null; // current Planet 
+        this.length = 0;
+        this.pathsChecked = [];
+
+        this.processHead = function () {
+
+            var newNodes = [];
+
+            for (var i = 0; i < this.head.paths.pathsArray.length; i++) {
+
+                var currentPath = this.head.paths.pathsArray[i];
+
+                // It's an array the player has available to search and we haven't seen it yet
+                if (this.playerHasPath(currentPath) && $.inArray(currentPath, this.pathsChecked) == -1) {
+                   
+                    var newPathFinderNode = new pathFinderNode();
+
+                    newPathFinderNode.planetList = this.planetList.slice(0);
+                    newPathFinderNode.head = currentPath.getOppositePlanet(this.head);
+                    newPathFinderNode.length += currentPath.length;
+                    newPathFinderNode.planetList.push(newPathFinderNode.head);
+                    newPathFinderNode.pathsChecked = this.pathsChecked;
+
+                    newNodes.push(newPathFinderNode);
+                }
+
+
+                this.pathsChecked.push(currentPath);
+            }
+
+        
+            return newNodes;
+
+        }
+
+        this.playerHasPath = function(path){
+            for (var i = 0; i < player.paths.pathArray.length; i++) {
+                if (path.id == player.paths.pathArray[i].path.id) {
+                    return player.paths.pathArray[i].explored;
+                }
+            }
+        }
+    }
+}
+
+// Get the path between two connecting planets
+
+Game.Utilities.GameObject.getPathBetweenPlanets = function (player, planet1, planet2) {
+
+    for (var i = 0; i < player.paths.pathArray.length; i++) {
+        var pathHandler = player.paths.pathArray[i];
+
+        if (pathHandler.explored && pathHandler.path.hasPlanet(planet1) && pathHandler.path.hasPlanet(planet2)) {
+            return pathHandler.path;
+        }
+    }
+
+    return null;
+}
+
+

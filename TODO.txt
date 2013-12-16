@@ -1,0 +1,54 @@
+﻿-- Current State of the Game --
+
+A planet is available for a starting point for the player user. They can "Search" for new paths, 
+or they can explore the path already found. Once a path has been explored the planet at the end of 
+the path becomes the players planet. 
+
+
+-- TO Do --
+
+3. Fog of War should cover the map based on your visibility range based on your stats
+
+6. Create fleet way-point management
+
+7. Hook up created ships to way-points
+
+8. Way-point allocation UI
+
+9. Figure out how fleet-to-planet and fleet-to-fleet battles work
+
+11. Make sure to remove event handlers for UI elements that are not visible (i.e. exploring new paths)
+
+12. Make sure generated planets and paths make sense. Make sure paths and planets don't overlap?
+
+13. Create UI to show 3rd 'overview' w/detailed bonuses
+
+14. Make it so that the exploring/discovering doesn't occur backwards in the UI
+
+15. Build out planetary infrastructure 
+
+17. Create UI For queuing ship construction
+
+18. Create UI For assigning ships to waypoints (will also need to create the waypoint management UI)
+
+19. Finish Planet UI
+
+20. Finish stats tree for the rest of stats
+
+21. Order found paths for waypoint to a new planet by lenght (waypoint.js line 164)
+
+Done
+
+1. Hook up UI for upgrading stats
+
+2. Planets found should have another action to make them acquired. You can only acquire a planet if it 
+has a link to your systems. Depending on your stats you may only be able to 'see' so far and will have to 're-explore' a 
+path in order to acquire a planet that you didn't when you first explored the path. [NOPE]
+
+4. Planets that are owned by a different player cannot be acquired unless attacked by a fleet.  [Currently Do Not Get Acquired]
+
+5. Hook up resources based on stats and planets owned [Planets Hooked Up]
+
+10. Figure out Cost and Factor in Cost of Exploration & Path Finding
+
+16. Make planets clickable and show up in the UI

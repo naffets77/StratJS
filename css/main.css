@@ -5,8 +5,8 @@
     -moz-user-select: -moz-none;
     -ms-user-select: none;
     user-select: none;
-    font-family:Arial;
-    color:#efefef;
+    font-family: Arial;
+    color: #efefef;
 }
 
 input,
@@ -42,6 +42,7 @@ textarea {
     background-color: #000;
     z-index: 2;
     border: 1px solid #666;
+    overflow: hidden;
 }
 
 
@@ -75,18 +76,24 @@ textarea {
     opacity: 0.95;
 }
 
+.rounded-corners-slight{
+         -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+}
+
 
 .game-ui-header {
     border-bottom: 1px solid #666;
-    height: 26px;
-    
+    height: 31px;
 }
 
     .game-ui-header .title {
-        position:absolute;
-        left:5px;
-        top:5px;
-        height:25px;
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        height: 25px;
     }
 
     .game-ui-header .hide {
@@ -100,61 +107,315 @@ textarea {
         background-repeat: no-repeat;
     }
 
-#info-box-background .hide{
+#info-box-background .hide {
     -webkit-transform: rotate(270deg);
     -moz-transform: rotate(270deg);
     -ms-transform: rotate(270deg);
     -o-transform: rotate(270deg);
     transform: rotate(270deg);
-
     height: 18px;
     top: 3px;
 }
 
-
-.info-box-content {
-    margin:10px;
+#info-box-background .scroll-table-holder {
+    height: 180px;
+    overflow: auto;
+    padding: 10px;
+    overflow-x: hidden;
+    margin-top: 0px;
+    float: left;
+    width: 351px;
 }
 
-.info-box-content .plus-icon {
+
+#info-box-background .menu {
+    float: right !important;
+}
+
+.info-box-content {
+    margin: 10px;
+}
+
+    .info-box-content .plus-icon {
         background-image: url('../Images/Icons/plus.png');
         background-size: contain;
         height: 20px;
         width: 26px;
         background-repeat: no-repeat;
+        cursor: pointer;
+    }
+
+    .info-box-content .tech-points div {
+        padding: 5px;
+        border: 1px solid #efefef;
+        float: left;
+        margin: 2px 4px;
+    }
+
+        .info-box-content .tech-points div.active {
+            background-color: #fff;
+        }
+
+#info-box-content-subcontent_available_ships {
+    font-size: 16px;
 }
 
-.info-box-content .tech-points div {
-    padding:5px;
-    border:1px solid #efefef;
-    float:left;
-    margin:2px 4px;
-}
+    #info-box-content-subcontent_available_ships tr td {
+        padding-right: 10px;
+    }
+
 
 #technology-points-available {
-    position:absolute;
-    top:-31px;
-    right:-1px;
-    border:1px solid #666;
-    padding:5px 10px 2px;
-    font-size:18px;
-    background-color:#000;
+    position: absolute;
+    top: -31px;
+    right: -1px;
+    border: 1px solid #666;
+    padding: 5px 10px 2px;
+    font-size: 18px;
+    background-color: #000;
 }
 
     #technology-points-available .counter {
-        float:left;
-        margin-right:10px;
+        float: left;
+        margin-right: 10px;
     }
 
     #technology-points-available .progress {
-        padding:10px 4px;
-        border:1px solid #999;
-        float:right;
-        
-    
+        padding: 10px 4px;
+        border: 1px solid #999;
+        float: right;
     }
 
 #info-box-technology table tr td {
-    padding:5px 0px;
+    padding: 5px 0px;
 }
 
+/* Game Manager Styles */
+
+
+#game-manager-background .game-ui-header ul, #info-box-background .menu {
+    list-style-type: none;
+    float: left;
+    margin-left: 10px;
+    padding-left: 0px;
+    margin-top: 5px;
+}
+
+    #game-manager-background .game-ui-header ul li, #info-box-background .menu li {
+        float: left;
+        margin-right: 10px;
+        padding: 4px 4px 1px 6px;
+        cursor: pointer;
+    }
+
+        #game-manager-background .game-ui-header ul li:hover, #info-box-background .menu li:hover {
+            outline: solid 1px #999;
+        }
+
+        #game-manager-background .game-ui-header ul li.current, #info-box-background .menu li.current {
+            outline: solid 1px #999;
+            background-color: #444;
+            cursor: none;
+        }
+
+
+        #game-manager-background .game-ui-header ul li img, #info-box-background .menu li img {
+            height: 16px;
+        }
+
+#game-manager-background .game-manager-content h2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 10px 20px;
+}
+
+#game-manager-resource-allocation-container {
+    background-color: #333;
+    padding: 20px;
+}
+
+    #game-manager-resource-allocation-container table {
+        font-size: 12px;
+    }
+
+        #game-manager-resource-allocation-container table tr td {
+            padding-bottom: 10px;
+        }
+
+            #game-manager-resource-allocation-container table tr td span {
+                font-size: 17px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+        #game-manager-resource-allocation-container table .resource-allocation-lock {
+            cursor: pointer;
+        }
+
+        #game-manager-resource-allocation-container table .locked {
+            display: none;
+        }
+
+        #game-manager-resource-allocation-container table tr td:first-child {
+            padding-right: 20px;
+        }
+
+        #game-manager-resource-allocation-container table tr td:nth-child(n+1) {
+            padding-right: 10px;
+        }
+
+        #game-manager-resource-allocation-container table tr td:nth-child(5) {
+            width: 140px;
+        }
+
+    #game-manager-resource-allocation-container p {
+        font-size: 12px;
+    }
+
+
+#game-manager-content-overall .info-table-container {
+    height: 400px;
+    overflow: auto;
+    margin-left: 20px;
+}
+
+#game-manager-content-overall .info-table {
+    margin-bottom: 10px;
+}
+
+    #game-manager-content-overall .info-table tr.title td {
+        padding-bottom: 5px;
+        padding-top: 20px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    #game-manager-content-overall .info-table tr td {
+        padding-bottom: 4px;
+        font-size: 12px;
+    }
+
+        #game-manager-content-overall .info-table tr td:first-child {
+            padding-right: 20px;
+        }
+
+/* Game Manager - Ship Queue Styles */
+
+#ship-queue-maintenance-name {
+    font-size: 12px;
+    position: absolute;
+    top: 45px;
+}
+
+#ship-queue-maintenance-slider-label {
+    margin-bottom: 5px;
+    width: 60px;
+    height: 18px;
+    line-height: 20px;
+    position: relative;
+    text-align: center;
+    font-size: 14px;
+}
+
+#game-manager-spaceship-queue-holder {
+    overflow: auto;
+    margin-top: 15px;
+}
+
+    #game-manager-spaceship-queue-holder .spaceship-type-queue-holder {
+        clear: both;
+        margin-bottom: 15px;
+        float: left;
+        width: 100%;
+    }
+
+    #game-manager-spaceship-queue-holder .shipSize {
+        margin-left: 20px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        width: 90%;
+        clear: both;
+        float: left;
+    }
+
+        #game-manager-spaceship-queue-holder .shipSize .name {
+            float: left;
+            width: 75px;
+        }
+
+        #game-manager-spaceship-queue-holder .shipSize .slider-holder {
+            float: left;
+            width: 50%;
+            position: relative;
+        }
+
+            #game-manager-spaceship-queue-holder .shipSize .slider-holder .label {
+                color: #fff;
+                float: left;
+                width: 10%;
+            }
+
+            #game-manager-spaceship-queue-holder .shipSize .slider-holder .slider {
+                width: 140px;
+                float: left;
+                margin-left: 5%;
+            }
+
+        #game-manager-spaceship-queue-holder .shipSize .current-count {
+            float: left;
+            width: 40px;
+            color: #fff;
+            margin-left: 15px;
+        }
+
+
+
+/* Waypoints */
+
+.game-manager-waypoint {
+    width: 100%;
+    float: left;
+}
+
+    .game-manager-waypoint .image {
+        float: left;
+        width: 41px;
+        height: 34px;
+        background-image: url('/Images/Icons/ship.png');
+        margin: 20px 10px;
+    }
+
+
+    .game-manager-waypoint .info {
+        float: left;
+        width: 120px;
+        font-size: 12px;
+        margin-right: 10px;
+    }
+
+    .game-manager-waypoint .composition {
+        float: left;
+        width: 120px;
+        font-size: 12px;
+        margin-right: 10px;
+    }
+
+    .game-manager-waypoint .goto {
+        float: left;
+        font-weight: bold;
+        text-align: center;
+        background-color: #444;
+        padding: 8px;
+        cursor: pointer;
+    }
+
+    .game-manager-waypoint .ships {
+        float: left;
+        font-weight: bold;
+        text-align: center;
+        background-color: #444;
+        padding: 8px;
+        cursor: pointer;
+        width: 46px;
+        margin-top: 5px;
+    }

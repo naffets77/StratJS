@@ -11,15 +11,14 @@
 
     this.highlight = false;
 
-    this.startExploring = false;
-    this.distanceExplored = 0;
-    this.explored = false;
-
     this.length = Game.Utilities.Math.distance(planet1.location, planet2.location);
 
     this.mouse = {
         isOver: false,
         checkOver: function (x, y, ClickEvent, pathHandler) {
+
+            var player = pathHandler.planet.player.owner;
+            var resultClicked = false;
 
             if (!pathHandler.explored) {
 
@@ -27,42 +26,54 @@
                     self.setOver();
                 }
 
-                var midpoint_x = Game.Utilities.Math.pointBetweenLine(self.planet1.location.x, self.planet2.location.x, .8);
-                var midpoint_y = Game.Utilities.Math.pointBetweenLine(self.planet1.location.y, self.planet2.location.y, .8);
+                var midpoint_x = Game.Utilities.Math.pointBetweenLine(self.planet1.location.x, self.planet2.location.x, .5);
+                var midpoint_y = Game.Utilities.Math.pointBetweenLine(self.planet1.location.y, self.planet2.location.y, .5);
 
-                var mouseOverLock = x > midpoint_x - self.unlockImage.width / 2 && y > midpoint_y - self.unlockImage.height / 2 && x < midpoint_x - self.unlockImage.width / 2 + self.unlockImage.width && y < midpoint_y - self.unlockImage.height / 2 + self.unlockImage.height;
+                //var mouseOverLock = x > midpoint_x - self.unlockImage.width / 2 && y > midpoint_y - self.unlockImage.height / 2 && x < midpoint_x - self.unlockImage.width / 2 + self.unlockImage.width && y < midpoint_y - self.unlockImage.height / 2 + self.unlockImage.height;
+
+                
+                var mouseOverLock = Game.Utilities.Math.simpleCollision(x, y, midpoint_x - self.unlockImage.width / 2, midpoint_y - self.unlockImage.height / 2, self.unlockImage.height, self.unlockImage.width);
 
 
+                //console.log("checking path for " + self.id + " : (" + midpoint_x + ", " + midpoint_y + ") - " + mouseOverLock);
 
-                console.log("checking path for " + self.id + " : (" + midpoint_x + ", " + midpoint_y + ") - " + mouseOverLock);
-
-
+                //if (mouseOverLock) {
+                //    console.log('over: ' + x + "," + y + " vs " + midpoint_x + "," + midpoint_y);
+                //}
 
                 // need to check for collision and click event on the unlock icon
                 if (ClickEvent && mouseOverLock) {
                     console.log("Exploring started");
                     //self.startExploring = true;
+
                     pathHandler.explore();
+
+                    resultClicked = true;
                 }
             }
+
+            return resultClicked;
 
         }
     }
 }
 
-Path.prototype.draw = function (ctx, isExplored, isBeingExplored, distanceExplored) {
+Path.prototype.draw = function (ctx, unlockable, isExplored, isBeingExplored, distanceExplored) {
 
-    //if (this.active) {
 
-        var midpoint_x = Game.Utilities.Math.pointBetweenLine(this.planet1.location.x, this.planet2.location.x, .8);
-        var midpoint_y = Game.Utilities.Math.pointBetweenLine(this.planet1.location.y, this.planet2.location.y, .8);
+        var midpoint_x = Game.Utilities.Math.pointBetweenLine(this.planet1.location.x, this.planet2.location.x, .5);
+        var midpoint_y = Game.Utilities.Math.pointBetweenLine(this.planet1.location.y, this.planet2.location.y, .5);
 
+
+        ctx.save();
 
         ctx.beginPath();
         ctx.moveTo(this.planet1.location.x, this.planet1.location.y);
         ctx.lineTo(this.planet2.location.x, this.planet2.location.y);
         ctx.lineWidth = 6;
 
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgb(200, 200, 200)';
 
         
         ctx.strokeStyle = isExplored ? '#efefef' : '#999';
@@ -72,7 +83,13 @@ Path.prototype.draw = function (ctx, isExplored, isBeingExplored, distanceExplor
             ctx.lineWidth = 10;
             ctx.stroke();
 
-            ctx.drawImage(this.unlockImage, midpoint_x - this.unlockImage.width / 2, midpoint_y - this.unlockImage.height / 2, this.unlockImage.width, this.unlockImage.height);
+            if (unlockable) {
+                ctx.drawImage(this.unlockImage, midpoint_x - this.unlockImage.width / 2, midpoint_y - this.unlockImage.height / 2, this.unlockImage.width, this.unlockImage.height);
+            }
+            //ctx.strokeStyle = '#ffffff';
+            //ctx.lineWidth = 1;
+            //ctx.rect(midpoint_x - this.unlockImage.width / 2, midpoint_y - this.unlockImage.height / 2, this.unlockImage.width, this.unlockImage.height);
+            //ctx.stroke();
 
         }
         else {
@@ -80,7 +97,7 @@ Path.prototype.draw = function (ctx, isExplored, isBeingExplored, distanceExplor
         }
 
 
-        // This will show the animcation of exploring
+        // This will show the animation of exploring
         if (isBeingExplored) {
             ctx.beginPath();
             ctx.moveTo(this.planet1.location.x, this.planet1.location.y);
@@ -95,11 +112,12 @@ Path.prototype.draw = function (ctx, isExplored, isBeingExplored, distanceExplor
 
 
         // Debug id
-        ctx.fillStyle = 'orange';
-        ctx.font = "bold 16px sans-serif";
-        ctx.fillText(this.id, midpoint_x, midpoint_y);
+        //ctx.fillStyle = 'orange';
+        //ctx.font = "bold 16px sans-serif";
+        //ctx.fillText(this.id, midpoint_x, midpoint_y);
 
-    //}
+
+        ctx.restore();
 
 }
 
@@ -108,22 +126,6 @@ Path.prototype.update = function (dt) {
     if ((this.planet1.mouse.isOver || this.planet2.mouse.isOver)) {
         this.setOver();
     }
-
-    var exploreRate = .05; // .05 pixels a millisecond
-    if (this.startExploring) {
-        //console.log("Explored: " + this.distanceExplored + " of " + this.length + " (" + this.distanceExplored / this.length + ")");
-        this.distanceExplored += exploreRate * dt;
-    }
-
-    if (this.startExploring && this.distanceExplored > this.length) {
-        this.startExploring = false;
-        this.explored = true;
-        
-        
-        this.planet1.player.owner.planets.set(this.planet2);
-
-    }
-
 }
 
 // Helpers
@@ -137,4 +139,8 @@ Path.prototype.setOver = function () {
 
 Path.prototype.getOppositePlanet = function (planet) {
     return this.planet1.id == planet.id ? this.planet2 : this.planet1;
+}
+
+Path.prototype.hasPlanet = function (planet) {
+    return this.planet1 == planet || this.planet2 == planet ;
 }

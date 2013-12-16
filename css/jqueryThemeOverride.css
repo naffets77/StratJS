@@ -1,0 +1,22 @@
+﻿
+/* GENERAL OVERRIDE STYLES */
+
+
+/* Overriding dark border styles */
+
+.ui-widget-content{
+    border: 1px solid #ACACAC;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+    border:1px solid #999;
+}
+
+
+/* Overriding progress bar size */
+.ui-progressbar-small{
+    height:1em !important;
+}
+
+/* CONTENT SPECIFIC OVERRIDE STYLES */
+

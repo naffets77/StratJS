@@ -1,203 +1,519 @@
 <html>
-    <head>
-      
-        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
-          
-        <title>JS Strategy</title>
+<head>
 
-        <link href="css/debug.css" rel="stylesheet" />
-        <link href="css/main.css" rel="stylesheet" />
-    
-    </head>
-    <body style="background-color:#000;background-image:url('Images/starfield.png')">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
+
+    <title>JS Strategy</title>
+
+    <link href="css/debug.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    <link href="javascript/jqueryUI/jqueryTheme_darkhive.css" rel="stylesheet" />
+    <link href="css/jqueryThemeOverride.css" rel="stylesheet" />
+    <link href="css/jquery.qtip.css" rel="stylesheet" />
+</head>
+<body style="background-color:#000;background-image:url('Images/starfield.png')">
 
 
-        <table style="position:absolute; top:5px; right:5px; z-index:100;">
-            <tr>
-                <td>Time Passed</td>
-                <td id="dt"></td>
-            </tr>
-            <tr>
-                <td>Mouse Coords Abs</td>
-                <td id="mouseCoords"></td>
-            </tr>
-            <tr>
-                <td>Mouse Coords Translated</td>
-                <td id="mouseCoordsDx"></td>
-            </tr>
-        </table>
+    <table style="position:absolute; top:5px; right:100px; z-index:100;">
+        <tr>
+            <td>Time Passed</td>
+            <td id="dt"></td>
+        </tr>
+        <tr>
+            <td>Mouse Coords Abs</td>
+            <td id="mouseCoords"></td>
+        </tr>
+        <tr>
+            <td>Mouse Coords Translated</td>
+            <td id="mouseCoordsDx"></td>
+        </tr>
+    </table>
 
-        <div id="players" style="display:none;">
+    <div id="players" style="float:right;">
 
+    </div>
+
+    <div id="game-manager-background" class="transparent">
+        <div class="game-ui-header">
+            <ul>
+                <li id="game-manager-icon_overall" class="current"><img src="Images/Icons/bulb.png" /></li>
+                <li id="game-manager-icon_planets"><img src="Images/Icons/bulb.png" /></li>
+                <li id="game-manager-icon_ships-queue"><img src="Images/Icons/bulb.png" /></li>
+                <li id="game-manager-icon_waypoints"><img src="Images/Icons/bulb.png" /></li>
+                <!--<li id="game-manager-icon_overall"><img src="Images/Icons/bulb.png" /></li>-->
+            </ul>
+            <div class="hide"></div>
         </div>
 
-        <div id="game-manager-background" class="transparent">
-            <div class="game-ui-header">
-                <div class="title"></div>
-                <div class="hide"></div>
-            </div>
-        </div>
+        <div id="game-manager-content-overall" class="game-manager-content">
+            <h2>Overview</h2>
 
-        <div id="info-box-background" class="transparent">
-            <div class="game-ui-header">
-                <div class="title">Technology</div>
-                <div class="hide"></div>
-            </div>
-
-            <div id="info-box-technology" class="info-box-content">
-                <div id="technology-points-available">
-                    <div class="counter">3</div>
-                    <div class="progress"></div>
-                </div>
+            <div id="game-manager-resource-allocation-container">
                 <table>
                     <tr>
-                        <td>
-                            <div prop="speed" class="plus-icon"></div>
+                        <td colspan="5">Resource Allocation</td>
+                    </tr>
+                    <tr class="production" prop="production">
+                        <td>Production</td>
+                        <td><span class="value">30</span>%</td>
+                        <td><span>+</span>&nbsp;&nbsp;<span>-</span></td>
+                        <td class="resource-allocation-lock">
+                            <img class="unlocked" height="20" src="Images/Icons/unlocksmall.png" />
+                            <img class="locked" height="20" src="Images/Icons/lock.png" />
                         </td>
-                        <td>
-                            Speed
+                        <td>Planet Growth and Ships</td>
+                    </tr>
+                    <tr class="science" prop="science">
+                        <td>Science</td>
+                        <td><span class="value">30</span>%</td>
+                        <td><span>+</span>&nbsp;&nbsp;<span>-</span></td>
+                        <td class="resource-allocation-lock">
+                            <img class="unlocked" height="20" src="Images/Icons/unlocksmall.png" />
+                            <img class="locked" height="20" src="Images/Icons/lock.png" />
                         </td>
-                        <td class="tech-points">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                        <td>Faster Science Points</td>
+                    </tr>
+                    <tr class="culture" prop="culture">
+                        <td>Culture</td>
+                        <td><span class="value">30</span>%</td>
+                        <td><span>+</span>&nbsp;&nbsp;<span>-</span></td>
+                        <td class="resource-allocation-lock">
+                            <img class="unlocked" height="20" src="Images/Icons/unlocksmall.png" />
+                            <img class="locked" height="20" src="Images/Icons/lock.png" />
                         </td>
-                        <td class="tech-bonuses">
-                            <div></div>
-                            <div></div>
-                        </td>
+                        <td>Popuplation and Culture</td>
+                    </tr>
+                </table>
+
+                <div class="game-management-container" style="position:relative; margin-left:5px; padding-bottom:10px;">
+                    <div id="ship-queue-maintenance-name">Ship Upkeep Restriction (Max 75%)</div>
+                    <div id="ship-queue-maintenance-slider-label">20%</div>
+                    <div id="ship-queue-maintenance-slider"></div>
+                </div>
+
+            </div>
+
+            <div class="info-table-container">
+                <table class="info-table">
+                    <tr class="title">
+                        <td colspan="2">General </td>
                     </tr>
                     <tr>
-                        <td>
-                            <div prop="exploration" class="plus-icon"></div>
-                        </td>
-                        <td>
-                            Exploration
-                        </td>
-                        <td class="tech-points">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        </td>
-                        <td class="tech-bonuses">
-                            <div></div>
-                            <div></div>
-                        </td>
+                        <td>Resources Total</td>
+                        <td id="info-table-resources-net"></td>
                     </tr>
                     <tr>
-                        <td>
-                            <div prop="weapons" class="plus-icon"></div>
-                        </td>
-                        <td>
-                            Weapons
-                        </td>
-                        <td class="tech-points">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        </td>
-                        <td class="tech-bonuses">
-                            <div></div>
-                            <div></div>
-                        </td>
+                        <td>Ship Upkeep</td>
+                        <td id="info-table-resources-ship-upkeep"></td>
                     </tr>
                     <tr>
-                        <td>
-                            <div prop="defenses" class="plus-icon"></div>
-                        </td>
-                        <td>
-                            Defenses
-                        </td>
-                        <td class="tech-points">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        </td>
-                        <td class="tech-bonuses">
-                            <div></div>
-                            <div></div>
-                        </td>
+                        <td>Resources Available</td>
+                        <td id="info-table-resources-available"></td>
                     </tr>
                     <tr>
-                        <td>
-                            <div prop="science" class="plus-icon"></div>
-                        </td>
-                        <td>
-                            Science
-                        </td>
-                        <td class="tech-points">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        </td>
-                        <td class="tech-bonuses">
-                            <div></div>
-                            <div></div>
-                        </td>
+                        <td>Production</td>
+                        <td id="info-table-production-rate"></td>
                     </tr>
                     <tr>
-                        <td>
-                            <div prop="economy" class="plus-icon"></div>
-                        </td>
-                        <td>
-                            Economy
-                        </td>
-                        <td class="tech-points">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        </td>
-                        <td class="tech-bonuses">
-                            <div></div>
-                            <div></div>
-                        </td>
+                        <td>Science Rate</td>
+                        <td id="info-table-science-rate"></td>
                     </tr>
                     <tr>
-                        <td>
-                            <div class="plus-icon"></div>
-                        </td>
-                        <td>
-                            Culture
-                        </td>
-                        <td class="tech-points">
-                            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                        </td>
-                        <td class="tech-bonuses">
-                            <div></div>
-                            <div></div>
+                        <td>Culture Rate</td>
+                        <td id="info-table-culture-rate"></td>
+                    </tr>
+                    <tr class="title">
+                        <td colspan="2">Science</td>
+                    </tr>
+                    <tr>
+                        <td>Next Point Cost</td>
+                        <td><span id="info-table-science-point-cost"></span> (<span id="info-table-next-science-point-time"></span>)</td>
+                    </tr>
+                    <tr>
+                        <td>Resarch Bonus</td>
+                        <td id="info-table-science-bonus-research"></td>
+                    </tr>
+                    <tr>
+                        <td>Research Net</td>
+                        <td id="info-table-science-research-net"></td>
+                    </tr>
+                    <tr>
+                    <tr class="title">
+                        <td colspan="2">Planets</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Planets</td>
+                        <td id="info-table-planets-count"></td>
+                    </tr>
+                    <tr>
+                        <td>Average Popuplation</td>
+                        <td id="info-table-planets-population-avg"></td>
+                    </tr>
+                    <tr>
+                        <td>Average Infrastructure level</td>
+                        <td id="info-table-avg-infrastructure-level"></td>
+                    </tr>
+                    <tr class="title">
+                        <td colspan="2">Military</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Waypoints</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Commanders</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Free Commanders</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Total Ship Count</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td>Military Strength</td>
+                        <td>2432</td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+        <div id="game-manager-content-planets" class="game-manager-content" style="display:none;">
+            <h2>Planets Overview</h2>
+        </div>
+
+        <div id="game-manager-content-ships-queue" class="game-manager-content" style="display:none;">
+            <h2>Spaceship Management</h2>
+
+
+
+
+            <div id="game-manager-spaceship-queue-holder"><!-- will be populated dynamically--></div>
+
+
+
+
+
+        </div>
+
+        <div id="game-manager-content-waypoints" class="game-manager-content" style="display:none;">
+            <h2>Waypoints Management</h2>
+            <div id="game-manager-waypoints-holder">
+                <div class="game-manager-waypoint">
+                    <div class="image"></div>
+                    <table class="info">
+                        <tr>
+                            <td>Waypoint</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>Power</td>
+                            <td>123</td>
+                        </tr>
+                        <tr>
+                            <td>Power %</td>
+                            <td>20%</td>
+                        </tr>
+                        <tr>
+                            <td>Ship Count</td>
+                            <td>25</td>
+                        </tr>
+                    </table>
+                    <table class="composition">
+                        <tr>
+                            <td></td>
+                            <td>S</td>
+                            <td>M</td>
+                            <td>L</td>
+                            <td>C</td>
+                        </tr>
+                        <tr>
+                            <td>Fighter</td>
+                            <td>5</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>Missile</td>
+                            <td>5</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>2</td>                            
+                        </tr>
+                        <tr>
+                            <td>Support</td>
+                            <td>5</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>2</td>
+                        </tr>
+                    </table>
+                    <div class="goto rounded-corners-slight">
+                        Go To
+                    </div>
+                    <div class="ships rounded-corners-slight">
+                        Ships
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div id="info-box-background" class="transparent">
+        <div class="game-ui-header">
+            <div class="title">Technology</div>
+            <div class="hide"></div>
+        </div>
+
+        <div id="info-box-technology" class="info-box-content">
+            <div id="technology-points-available">
+                <div class="counter">3</div>
+                <div class="progress"></div>
+            </div>
+            <table>
+                <tr>
+                    <td>
+                        <div prop="speed" class="plus-icon"></div>
+                    </td>
+                    <td>
+                        Speed
+                    </td>
+                    <td class="tech-points">
+                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                    </td>
+                    <td class="tech-bonuses">
+                        <div></div>
+                        <div></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div prop="exploration" class="plus-icon"></div>
+                    </td>
+                    <td>
+                        Exploration
+                    </td>
+                    <td class="tech-points">
+                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                    </td>
+                    <td class="tech-bonuses">
+                        <div></div>
+                        <div></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div prop="weapons" class="plus-icon"></div>
+                    </td>
+                    <td>
+                        Weapons
+                    </td>
+                    <td class="tech-points">
+                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                    </td>
+                    <td class="tech-bonuses">
+                        <div></div>
+                        <div></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div prop="defenses" class="plus-icon"></div>
+                    </td>
+                    <td>
+                        Defenses
+                    </td>
+                    <td class="tech-points">
+                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                    </td>
+                    <td class="tech-bonuses">
+                        <div></div>
+                        <div></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div prop="science" class="plus-icon"></div>
+                    </td>
+                    <td>
+                        Science
+                    </td>
+                    <td class="tech-points">
+                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                    </td>
+                    <td class="tech-bonuses">
+                        <div></div>
+                        <div></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div prop="economy" class="plus-icon"></div>
+                    </td>
+                    <td>
+                        Economy
+                    </td>
+                    <td class="tech-points">
+                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                    </td>
+                    <td class="tech-bonuses">
+                        <div></div>
+                        <div></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div prop="culture" class="plus-icon"></div>
+                    </td>
+                    <td>
+                        Culture
+                    </td>
+                    <td class="tech-points">
+                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                    </td>
+                    <td class="tech-bonuses">
+                        <div></div>
+                        <div></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="info-box-planet" class="info-box-content" style="display:none;">
+
+            <ul class="menu">
+                <li id="info-box-planet-menu-icon_planet-overall" class="current"><img src="Images/Icons/bulb.png" /></li>
+                <li id="info-box-planet-menu-icon_planet-ships"><img src="Images/Icons/bulb.png" /></li>
+            </ul>
+
+            <div id="info-box-content-subcontent_planet-overall" class="info-box-content-subcontent">
+                <table>
+                    <tr class="header">
+                        <td>General</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Population</td>
+                        <td id="info-box-planet-population"></td>
+                    </tr>
+                    <tr>
+                        <td>Population Growth</td>
+                        <td id="info-box-planet-population-growth"></td>
+                    </tr>
+                    <tr>
+                        <td>Available Production</td>
+                        <td id="info-box-planet-available-production"></td>
+                    </tr>
+                    <tr>
+                        <td>Exploration/Discover Cost</td>
+                        <td><span id="info-box-planet-exploration-cost"></span>/<span id="info-box-planet-discover-cost"></span></td>
+                    </tr>
+                    <tr class="header">
+                        <td>Infrastructure Level <span id="info-box-planet-level"></span></td>
+                        <td><div id="info-box-planet-level-progress" class="ui-progressbar-small"></div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Production Slider (Infrastructure | Ship Building)</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div id="info-box-planet-production-slider"></div></td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td id="info-box-planet-ship-role"></td>
+                        <td id="info-box-planet-ship-size"></td>
+                        <td style="width:100px;">
+                            <div id="info-box-planet-ship-progress" class="ui-progressbar-small"></div>
                         </td>
                     </tr>
                 </table>
-            </div>
-
-            <div id="info-box-planet" class="info-box-content" style="display:none;">
 
             </div>
 
-            <div id="info-box-waypoint" class="info-box-content" style="display:none;">
+            <div id="info-box-content-subcontent_planet-ships" class="info-box-content-subcontent" style="display:none">
 
+                <div class="scroll-table-holder">
+                    <table id="info-box-content-subcontent_available_ships"></table>
+                </div>
             </div>
-            
+
+
         </div>
 
+        <div id="info-box-waypoint" class="info-box-content" style="display:none;">
+            <div id="info-box-content-subcontent_waypoint-overall" class="info-box-content-subcontent">
+                <table>
+                    <tr class="header">
+                        <td>General</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Ship Count</td>
+                        <td><span id="info-box-waypoint-ship-count"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Ship Power</td>
+                        <td><span id="info-box-waypoint-ship-power"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Ship Power %</td>
+                        <td><span id="info-box-waypoint-ship-percent"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Planet</td>
+                        <td><span id="info-box-waypoint-current-planet"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Last Planet</td>
+                        <td><span id="info-box-waypoint-last-planet"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
-        <canvas id="game-canvas" style="display:block;"></canvas>
+    </div>
+
+    <canvas id="game-canvas" style="display:block;"></canvas>
 
 
-        <script src="javascript/jquery.js"></script>
-        <script src="javascript/Engine/GameEngine.js"></script>
-        <script src="javascript/Engine/Assets.js"></script>
-        <script src="javascript/Engine/GameLoop.js"></script>
+    <script src="javascript/jquery.js"></script>
+    <script src="javascript/jqueryUI/jqueryUI.1.10.3.js"></script>
 
-        <script src="javascript/Game/base.js"></script>
-        <script src="javascript/Game/InputHandlers/mouse.js"></script>
-        <script src="javascript/Game/InputHandlers/keyboard.js"></script>
-        <script src="javascript/Game/Utilities/math.js"></script>
-        <script src="javascript/Game/Utilities/management.js"></script>
-        <script src="javascript/Game/Utilities/gameobject.js"></script>
-        <script src="javascript/Game/GameObjects/path.js"></script>
-        <script src="javascript/Game/GameObjects/ship.js"></script>
-        <script src="javascript/Game/GameObjects/waypoint.js"></script>        
+    <script src="javascript/JqueryPlugins/jquery.qtip.min.js"></script>
 
+    <script src="javascript/Engine/GameEngine.js"></script>
+    <script src="javascript/Engine/Assets.js"></script>
+    <script src="javascript/Engine/GameLoop.js"></script>
 
-        <script src="javascript/Layout/LayoutManager.js"></script>
-
-        <script type="text/javascript" src="javascript/config.js"></script>
-        <script type="text/javascript" src="javascript/player.js"></script>
-        <script type="text/javascript"src="javascript/planet.js"></script>
-        <script type="text/javascript" src="javascript/ai.js"></script>
+    <script src="javascript/Game/base.js"></script>
+    <script src="javascript/Game/InputHandlers/mouse.js"></script>
+    <script src="javascript/Game/InputHandlers/keyboard.js"></script>
+    <script src="javascript/Game/Utilities/math.js"></script>
+    <script src="javascript/Game/Utilities/management.js"></script>
+    <script src="javascript/Game/Utilities/gameobject.js"></script>
+    <script src="javascript/Game/Utilities/canvas.js"></script>
+    <script src="javascript/Game/GameObjects/path.js"></script>
+    <script src="javascript/Game/GameObjects/ship.js"></script>
+    <script src="javascript/Game/GameObjects/waypoint.js"></script>
 
 
-        <script type="text/javascript" src="javascript/game.js"></script>
-        
-        
-    </body>
+    <script src="javascript/Layout/LayoutManager.js"></script>
+
+    <script type="text/javascript" src="javascript/config.js"></script>
+    <script type="text/javascript" src="javascript/player.js"></script>
+    <script type="text/javascript" src="javascript/planet.js"></script>
+    <script type="text/javascript" src="javascript/ai.js"></script>
+
+
+    <script type="text/javascript" src="javascript/game.js"></script>
+
+</body>
 </html>

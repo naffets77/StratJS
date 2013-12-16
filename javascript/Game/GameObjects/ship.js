@@ -9,6 +9,10 @@
     this.role = options.shipTemplate.role; // Support, Fighter, Missile 
     this.size = options.shipTemplate.size; // small, medium, large, capitol
 
+    this.cost = options.cost;
+
+    this.destroyed = false;
+    this.destroyedReason = null;
 }
 
 

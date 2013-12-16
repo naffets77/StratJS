@@ -46,3 +46,8 @@ Game.Utilities.Math.lineIntersect = function (x1, y1, x2, y2, x3, y3, x4, y4) {
     }
     return true;
 }
+
+// checks if a point is within bounds of a square
+Game.Utilities.Math.simpleCollision = function (px, py, sqx, sqy, sqHeight, sqWidth) {
+    return px >= sqx && px <= sqx + sqWidth && py >= sqy && py <= sqy + sqHeight;
+}

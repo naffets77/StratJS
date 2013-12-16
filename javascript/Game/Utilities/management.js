@@ -1,5 +1,7 @@
 ﻿
 
+// How frequently does stuff in the game process, if gameTicRate = 250ms then it'll be updated 4 times a second
+// Production gets calculated 4 times a second
 Game.Utilities.Management.sendTic = function (game) {
 
     var result = false;
@@ -63,7 +65,7 @@ Game.Utilities.Management.buildMap = function (game) {
                         imageName: 'planet5',
 
                         population: {
-                            initialPopulation: 50
+                            initialPopulation: 25
                         }
                     }));
                 }
