@@ -222,7 +222,7 @@ lm.infoboxUI = function (Game) {
         $("#info-box-planet-population-growth").html((Math.round(planet.population.incrementCache * ticMultiplier * 1000) / 1000) + " % / sec");
         $("#info-box-planet-level").html(planet.infrastructure.level);
 
-        $("#info-box-planet-available-production").html(planet.production.lastAvailableProduction);
+        $("#info-box-planet-available-production").html(planet.production.lastAvailableProduction.toFixed(2));
         $("#info-box-planet-exploration-cost").html(explorationCost);
         $("#info-box-planet-discover-cost").html(discoverCost);
 

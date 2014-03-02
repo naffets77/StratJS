@@ -9,7 +9,11 @@ function Player(options) {
     
     
     this.stats = new PlayerUtilities.statsHandler({ player: this });
-    this.technology = new PlayerUtilities.technologyHandler({ player: this });
+    this.technology = new PlayerUtilities.technologyHandler({
+        player: this,
+        technologyBonuses: options.technologyBonusConfig,
+        technologyUpgrades: options.technologyUpgradesConfig
+    });
     this.resources = new PlayerUtilities.resourcesHandler({ player: this });
     this.planets = new PlayerUtilities.planetHandler({ player: this });
     this.ships = new PlayerUtilities.shipHandler({ shipConfig: options.shipConfig, player:this });
@@ -28,14 +32,7 @@ Player.prototype.update = function (dt, doProduction) {
 
     this.science.update(dt);
 
-    var productionPercentAvailable = 100;
-    var shipUpkeepPercent = Math.floor(this.resources.getShipUpkeepPercentage() * 100);
-
-    // Subtract all of the things that create global cost
-    productionPercentAvailable -= shipUpkeepPercent;
-
-
-
+    var productionPercentAvailable = this.resources.getProductionAvailable();
 
     for (var i = 0; i < this.planets.planetArray.length; i++) {
 
@@ -69,8 +66,21 @@ Player.prototype.draw = function (ctx) {
     }
 }
 
-var PlayerUtilities = {
+Player.prototype.drawVisible = function (ctx) {
 
+    var planets = this.planets.planetArray;
+
+    for (var i = 0; i < planets.length; i++) {
+        var planet = planets[i].planet;
+        if (planet.player.owner == this) {
+            clearCircle(ctx, planet.location.x, planet.location.y, 300);
+        }
+    }
+
+
+}
+
+var PlayerUtilities = {
     statsHandler : function(options) {
         
         var self = this;
@@ -152,22 +162,26 @@ var PlayerUtilities = {
 
 
         this.technologies = {
-            speed: 0,
+            engines: 0,
             exploration: 0,
-            weapons: 0,
+            military: 0,
             defenses: 0,
             science: 0,
             culture: 0,
             economy: 0
         };
 
+        
+        this.technologyBonuses = options.technologyBonuses; // comes from config
+
+        this.technologyUpgrades = options.technologyUpgrades; 
+
         this.upgrade = function (technology, amount) {
             // this likely will only ever go up by 1, but for debugging purposes making it easier to change
             self.technologies[technology] += amount;
 
-            // get the array of updates
-            var techUpgradeArray = technologyConfig[technology][self.technologies[technology] - 1]; // array is 0 indexed
-
+            // Handle new tech upgrade bonuses
+            var techUpgradeArray = this.technologyUpgrades[technology][self.technologies[technology] - 1];//technologyConfig[technology][self.technologies[technology] - 1]; // array is 0 indexed
             for (var i = 0; i < techUpgradeArray.length; i++) {
                 var upgrade = techUpgradeArray[i];
 
@@ -175,11 +189,39 @@ var PlayerUtilities = {
                     case "STAT PERCENT BOOST":
                         player.stats.registerStatusBonus(upgrade);
                         break;
+                    default:
+                        alert("Unknown upgrade type: " + upgrade.type);
                 }
 
             }
 
+            // See if any multi-tech bonuses should be activated
+            for (var i = 0; i < this.technologyBonuses.length; i++) {
+                var bonus = this.technologyBonuses[i];
+                if (bonus.active == false && this.checkTechnologyBonus(bonus)) {
+                    console.log("Activated New Tech Bonus: " + bonus.name);
+                    bonus.active = true;
+                }
+            }
 
+
+        }
+
+        this.checkTechnologyBonus = function (bonus) {
+
+            var result = true;
+            var techCache = this.technologies;
+
+
+            for (var i = 0; i < bonus.requirements.length; i++) {
+                var requirement = bonus.requirements[i];
+
+                if (techCache[requirement.technology] < requirement.level) {
+                    result = false;
+                }
+            }
+
+            return result;
         }
 
 
@@ -187,7 +229,6 @@ var PlayerUtilities = {
     },
     resourcesHandler: function (options) {
 
-        var self = this;
         var player = options.player;
 
         this.resourceLocked = null;
@@ -267,6 +308,18 @@ var PlayerUtilities = {
         this.getShipUpkeepPercentage = function () {
             return this.getShipUpkeepCost() / player.planets.planetStats.productionRate;
         }
+
+        this.getProductionAvailable = function () {
+            var productionPercentAvailable = 100;
+            var shipUpkeepPercent = Math.floor(this.getShipUpkeepPercentage() * 100);
+
+            // Subtract all of the things that create global cost
+            productionPercentAvailable -= shipUpkeepPercent;
+
+            // there will be more..? otherwise this can all be one line!
+
+            return productionPercentAvailable;
+        }
     },
     planetHandler: function (options) {
         var self = this;
@@ -288,14 +341,16 @@ var PlayerUtilities = {
 
             //planet.player.setOwner(player); // This sets the ownership of the planet
             if (planet.player.owner == null) {
+
                 planet.player.setOwner(player);
-            }
+            
+                for (var i = 0; i < planet.paths.pathsArray.length; i++) {
+                    var path = planet.paths.pathsArray[i];
 
-            for (var i = 0; i < planet.paths.pathsArray.length; i++) {
-                var path = planet.paths.pathsArray[i];
+                    if (path.defaultActive && !player.paths.contains(path)) {
+                        player.paths.add(path, planet);
+                    }
 
-                if (path.defaultActive && !player.paths.contains(path)) {
-                    player.paths.add(path, planet);
                 }
 
             }
@@ -425,7 +480,6 @@ var PlayerUtilities = {
             
         }
 
-
         this.contains = function (path) {
 
             var result = false;
@@ -438,25 +492,41 @@ var PlayerUtilities = {
 
             return result;
         }
+
+        this.getByPlanet = function (planet) {
+            var result = [];
+
+            for (var i = 0; i < this.pathArray.length; i++) {
+                if (planet == this.pathArray[i].path.planet) {
+                    result.push(this.pathArray[i]);
+                }
+            }
+
+            return result;
+        }
+
         this.discoverPath = function (planet) {
 
-            var discoverCost = this.player.stats.getCost("path", "discoverCost");
-            var discoverRate = this.player.stats.getCost("path", "discoverRate");
+            // update planet to see if it has any more paths to discover
+            var planetHelper = this.player.planets.contains(planet);
 
-            discoverCost -= discoverCost * (this.player.stats.percentageBonuses.discoverCostBonus.cachedValue / 100);
+            planetHelper.checkPathsCompleted();
 
-            discoverRate += discoverRate * (this.player.stats.percentageBonuses.discoverRateBonus.cachedValue / 100);
-            discoverRate += discoverRate * (this.player.stats.percentageBonuses.speedBonus.cachedValue / 100);
+            if (!planetHelper.allPathsFound) {
 
+                // trigger the discover 
+                this.add(planet.paths.pathsArray, planet).discover();
+            }
+            else {
+                console.log("tried to discover path that didn't exist...TROUBLESHOOT (PID: " + planet.id + ")");
+            }
 
-            this.add(planet.paths.pathsArray, planet)
-                .explore(discoverRate, discoverCost);
-
-            this.player.planets.contains(planet).checkPathsCompleted();
+            
+            
 
         }
 
-
+        // current production cost of all paths
         this.getProductionCost = function (planet) {
 
             var cost = 0;
@@ -489,7 +559,7 @@ var PlayerUtilities = {
             this.explore = function () {
 
                 if (this.canExplore()) {
-                    var explorationCost = this.player.stats.getCost("path", "discoverCost");
+                    var explorationCost = this.player.stats.getCost("path", "exploreCost");
                     var explorationRate = this.player.stats.getCost("path", "exploreRate");
 
                     explorationCost -= explorationCost * (this.player.stats.percentageBonuses.explorationCostBonus.cachedValue / 100);
@@ -499,6 +569,23 @@ var PlayerUtilities = {
 
                     this.exploreRate = explorationRate;
                     this.exploreCost = explorationCost;
+                    this.distanceExplored = this.planet.radius;
+                    this.exploring = true;
+                }
+            }
+
+            this.discover = function () {
+                if (this.canDiscover()) {
+                    var discoverCost = this.player.stats.getCost("path", "discoverCost");
+                    var discoverRate = this.player.stats.getCost("path", "discoverRate");
+
+                    discoverCost -= discoverCost * (this.player.stats.percentageBonuses.discoverCostBonus.cachedValue / 100);
+
+                    discoverRate += discoverRate * (this.player.stats.percentageBonuses.discoverRateBonus.cachedValue / 100);
+                    discoverRate += discoverRate * (this.player.stats.percentageBonuses.speedBonus.cachedValue / 100);
+
+                    this.exploreRate = discoverRate;
+                    this.exploreCost = discoverCost;
                     this.distanceExplored = this.planet.radius;
                     this.exploring = true;
                 }
@@ -526,8 +613,13 @@ var PlayerUtilities = {
                     this.exploring = false;
 
 
-                    // This shouldn't set the planet, but make the planet visible
-                    self.player.planets.add(this.path.getOppositePlanet(this.planet));
+                    // This should only add the Planet if it's not owned by someone else
+                    var oppositePlanet = this.path.getOppositePlanet(this.planet);
+                    
+                    if (!self.player.planets.contains(oppositePlanet)) {
+                        self.player.planets.add(oppositePlanet);
+                    }
+
                 }
 
                 this.path.update(dt);
@@ -687,6 +779,19 @@ var PlayerUtilities = {
 }
 
 
+
+// Draw Helper (this should be some drawing lib helper?)
+
+function clearCircle(ctx, x, y, radius) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'source-atop';
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+    ctx.clip();
+    ctx.clearRect(x - radius - 1, y - radius - 1,
+                      radius * 2 + 2, radius * 2 + 2);
+    ctx.restore();
+};
 
 
 

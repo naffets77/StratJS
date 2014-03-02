@@ -30,7 +30,7 @@ function Planet(options) {
 }
 
 Planet.prototype.update = function (dt, player, doProduction, productionPercentAvailable) {
-    this.population.update(dt, doProduction);
+    this.population.update(dt, player, doProduction);
     this.production.update(dt, doProduction, productionPercentAvailable);
 }
 
@@ -113,7 +113,7 @@ var PlanetUtilities = {
                     self.nextLevelPointsRequired = self.levelCache[self.level];
                 }
 
-                console.log("Increased Level: " + self.level + " ( Next Level At - " + self.nextLevelPointsRequired + ")");
+                console.log("Player " + self.planet.player.owner.id + " Increased Level: " + self.level + " ( Next Level At - " + self.nextLevelPointsRequired + ")");
             }
         }
 
@@ -166,8 +166,6 @@ var PlanetUtilities = {
 
                 // put production towards ships/infrastructure (NEED TO FIGURE OUT HOW MUCH TO EACH)
                 if (this.shipFactory.shipTemplate != null) {
-
-                    
 
                     var shipProductionAvailable = productionAvailable * (self.shipBuildingAllocation / 100);
                     var infrastructureProduction = productionAvailable - shipProductionAvailable;
@@ -237,11 +235,17 @@ var PlanetUtilities = {
 
             var baseProduction = maxProduction * (self.planet.population.value/100);
 
+            baseProduction += maxProduction * (infrastructureConfig.baseBonus * this.planet.infrastructure.level);
+
             // Do other modifiers here
             baseProduction -= player.planets.getProductionCost(this.planet); // deduct any current costs against baseEnergy
 
             return baseProduction;
 
+        }
+
+        this.updateAvailableProduction = function () {
+            this.lastAvailableProduction = this.planet.production.calculateRaw() * (this.planet.player.owner.resources.getProductionAvailable() / 100);
         }
     },
 
@@ -288,12 +292,23 @@ var PlanetUtilities = {
     playerHandler : function(planet, options){
 
         var self = this;
-        var planet = planet;
+        this.planet = planet;
 
         this.owner = null;
 
         this.setOwner = function (player) {
             self.owner = player;
+
+            // loop through each path and fix for the player
+            for (var i = 0; i < this.planet.paths.pathsArray.length; i++) {
+                this.planet.paths.pathsArray[i].fixForOwner(this.planet);
+            }
+
+            // initialize planets production (could be different for each player based on stats)
+            this.planet.lastAvailableProduction = this.planet.production.updateAvailableProduction();
+            
+            
+
         }
     },
 
@@ -421,7 +436,7 @@ var PlanetUtilities = {
 
 
             // TODO: Have an "active player", so i can debug other players w/out being the 0 player
-            if ((clickEvent || mouseDownEvent) && planet.player.owner == Game.Players[0]) {
+            if ((clickEvent || mouseDownEvent) && planet.player.owner == Game.activePlayer) {
 
                 // checkDiscoverPaths is true if all paths are not found
                 var checkDiscoverPaths = !planet.player.owner.planets.contains(planet).allPathsFound ; 

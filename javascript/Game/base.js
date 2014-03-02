@@ -1,6 +1,6 @@
 ﻿var Game = {
 
-    AIDebug : true,
+    AIDebug : false,
 
     canvas: null,
     ctx: null,

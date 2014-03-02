@@ -3,17 +3,15 @@
 var gameConfig = {
 
     path: {
-        exploreRate: .25,
-        exploreCost: 25,
-        discoverRate: .01,
-        discoverCost: 40
+        exploreRate: .55,
+        exploreCost: 5,
+        discoverRate: .20,
+        discoverCost: 10
     }
 }
 
 
 var shipConfig = {
-
-
 
     fighter: {
         shipSizes: {
@@ -130,10 +128,10 @@ var shipConfig = {
 
 var infrastructureConfig = {
 
-    thresholdStart: 250,
+    thresholdStart: 1000,
     levelIncrement: 1.05, // each threshold doubles
     baseBonus: .05,       // 5% base bonus every level
-    bonusIncrement : .5   // 50% increase to the base bonus for every level
+    bonusIncrement: .5   // 50% increase to the base bonus for every level
 }
 
 
@@ -152,7 +150,7 @@ var infrastructureConfig = {
 
 var technologyConfig = {
 
-    speed: [
+    engines: [
         [
             {
                 name: "speedBonus",
@@ -623,6 +621,272 @@ var technologyConfig = {
                 type: "STAT PERCENT BOOST"
             }
         ]
+    ],
+    defenses: [
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "25",
+                source: "Defense Tech Level 1",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "10",
+                source: "Defense Tech Level 2",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "10",
+                source: "Defense Tech Level 3",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "10",
+                source: "Defense Tech Level 4",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "25",
+                source: "Defensive Tech Level 5",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "10",
+                source: "Defensive Tech Level 6",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "50",
+                source: "Defensive Tech Level 7",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "10",
+                source: "Defensive Tech Level 8",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "10",
+                source: "Defensive Tech Level 9",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "planitaryDefenseBonus",
+                value: "100",
+                source: "Defensive Tech Level 10",
+                type: "STAT PERCENT BOOST"
+            }
+        ]
+    ],
+    military: [
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "25",
+                source: "Military Tech Level 1",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "10",
+                source: "Military Tech Level 2",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "10",
+                source: "Military Tech Level 3",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "10",
+                source: "Military Tech Level 4",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "25",
+                source: "Military Tech Level 5",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "10",
+                source: "Military Tech Level 6",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "50",
+                source: "Military Tech Level 7",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "10",
+                source: "Military Tech Level 8",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "10",
+                source: "Military Tech Level 9",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "offensiveWeaponBonus",
+                value: "100",
+                source: "Military Tech Level 10",
+                type: "STAT PERCENT BOOST"
+            }
+        ]
+    ],
+    economy: [
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "25",
+                source: "Economy Tech Level 1",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "10",
+                source: "Economy Tech Level 2",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "10",
+                source: "Economy Tech Level 3",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "10",
+                source: "Economy Tech Level 4",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "25",
+                source: "Economy Tech Level 5",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "10",
+                source: "Economy Tech Level 6",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "50",
+                source: "Economy Tech Level 7",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "10",
+                source: "Economy Tech Level 8",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "10",
+                source: "Economy Tech Level 9",
+                type: "STAT PERCENT BOOST"
+            }
+        ],
+        [
+            {
+                name: "economicGrowthRateBonus",
+                value: "100",
+                source: "Economy Tech Level 10",
+                type: "STAT PERCENT BOOST"
+            }
+        ]
     ]
 
 }
+
+var technologyBonusesConfig = [
+    {
+        name: "Espionage - Major Paths",
+        description: "Our understanding of space and the quality of our pilots allow us access to the explored paths of our enemies.",
+        active: false,
+        requirements: [
+
+                {
+                    technology: "military",
+                    level: 3
+                },
+                {
+                    technology: "exploration",
+                    level: 1
+                }
+
+        ]
+    }
+]

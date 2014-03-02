@@ -23,8 +23,6 @@ the path becomes the players planet.
 
 13. Create UI to show 3rd 'overview' w/detailed bonuses
 
-14. Make it so that the exploring/discovering doesn't occur backwards in the UI
-
 15. Build out planetary infrastructure 
 
 17. Create UI For queuing ship construction
@@ -33,9 +31,11 @@ the path becomes the players planet.
 
 19. Finish Planet UI
 
-20. Finish stats tree for the rest of stats
-
 21. Order found paths for waypoint to a new planet by lenght (waypoint.js line 164)
+
+22. Handle exploring a planet that is owned by another player. (Player Line 572)
+
+23.
 
 Done
 
@@ -52,3 +52,8 @@ path in order to acquire a planet that you didn't when you first explored the pa
 10. Figure out Cost and Factor in Cost of Exploration & Path Finding
 
 16. Make planets clickable and show up in the UI
+
+20. Finish stats tree for the rest of stats
+
+14. Make it so that the exploring/discovering doesn't occur backwards in the UI
+

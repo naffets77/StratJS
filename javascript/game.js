@@ -8,11 +8,16 @@ Game.init = function (options) {
     this.canvas = options.canvas;
     this.ctx = options.ctx;
 
+    this.fogCanvas = options.fogCanvas;
+    this.fogctx = options.fogctx;
+
     this.ctx.xLoc = 0;
     this.ctx.yLoc = 0;
+    this.fogctx.yLoc = 0;
+    this.fogctx.xLoc = 0;
 
 
-    this.InputHandler.Mouse.init(this.canvas, this.ctx);
+    this.InputHandler.Mouse.init(this.fogCanvas, this.ctx);
     this.InputHandler.Keyboard.init(this);
 
     // attach the layout manager (maybe make this occur by default, so it's not ever detached?)
@@ -22,19 +27,20 @@ Game.init = function (options) {
 
     var Player1 = new Player({
         id: 0,
-        shipConfig: shipConfig
+        shipConfig: shipConfig,
+        technologyUpgradesConfig: technologyConfig,
+        technologyBonusConfig: technologyBonusesConfig
     });
 
     var Player2 = new Player({
         id: 1,
         ai: true,
-        shipConfig: shipConfig
+        shipConfig: shipConfig,
+        technologyUpgradesConfig: technologyConfig,
+        technologyBonusConfig: technologyBonusesConfig
     });
 
-    Game.AIManagers.push(new AIManager({
-        aiConfig: null,
-        player: Player2
-    }));
+
 
 
     // This will be more automated once races are defined
@@ -82,12 +88,15 @@ Game.init = function (options) {
 
     // Set the player that the layout manager will display values for
     this.LayoutManager.setPlayer(this.activePlayer);
+    this.InputHandler.Mouse.setPlayer(this.activePlayer);
+
+
+    Game.AIManagers.push(new AIManager({
+        aiConfig: null,
+        player: Player2
+    }));
 
     options.start();
-
-
-
-    
 
 }
 
@@ -142,7 +151,7 @@ Game.draw = function (ctx) {
 
     ctx.beginPath();
     ctx.rect(0, 0, 2000, 2200);
-    ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
     ctx.fill();
     ctx.lineWidth = 1;
     ctx.strokeStyle = '#666';
@@ -169,8 +178,44 @@ Game.draw = function (ctx) {
     }
 
 
+
+    var fogctx = Game.fogctx;
+
+
+    fogctx.save();
+    // Use the identity matrix while clearing the canvas
+    fogctx.setTransform(1, 0, 0, 1, 0, 0);
+    fogctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
+
+    // Restore the transform
+    fogctx.restore();
+
+    ////// Draw Fog
+    fogctx.beginPath();
+    fogctx.rect(0, 0, 2000, 2200);
+    fogctx.fillStyle = "rgba(15, 15, 15, .45)";
+    fogctx.fill();
+
+
+    Game.activePlayer.drawVisible(fogctx);
+
+
+    //clearCircle(fogctx, 400, 400, 400);
+
+
 };
 
+
+var clearCircle = function (ctx, x, y, radius) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'source-atop';
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+    ctx.clip();
+    ctx.clearRect(x - radius - 1, y - radius - 1,
+                      radius * 2 + 2, radius * 2 + 2);
+    ctx.restore();
+};
 
 
 
@@ -178,12 +223,16 @@ $(document).on('ready', function () {
 
     
     var canvas = document.getElementById("game-canvas");
+    var fogCanvas = document.getElementById("fog-game-canvas");
     var ctx = canvas.getContext("2d");
+    var fogctx = fogCanvas.getContext("2d");
 
     
     canvas.width = document.body.clientWidth; 
     canvas.height = document.body.clientHeight;
 
+    fogCanvas.width = document.body.clientWidth;
+    fogCanvas.height = document.body.clientHeight;
 
 
 
@@ -197,7 +246,9 @@ $(document).on('ready', function () {
 
         Game.init({
             canvas: canvas,
+            fogCanvas: fogCanvas,
             ctx: ctx,
+            fogctx: fogctx,
             start: function () {
                 // Starts the Loop
                 var GameLoop = new ge.GameLoop(ctx, Game.update, Game.draw);

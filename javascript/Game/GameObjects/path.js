@@ -105,6 +105,7 @@ Path.prototype.draw = function (ctx, unlockable, isExplored, isBeingExplored, di
                 Game.Utilities.Math.pointBetweenLine(this.planet1.location.x, this.planet2.location.x, distanceExplored / this.length),
                 Game.Utilities.Math.pointBetweenLine(this.planet1.location.y, this.planet2.location.y, distanceExplored / this.length)
             );
+            //console.log("Exploring Path " + this.id + "(" + distanceExplored + "): " + Game.Utilities.Math.pointBetweenLine(this.planet1.location.x, this.planet2.location.x, distanceExplored / this.length) + " and " + Game.Utilities.Math.pointBetweenLine(this.planet1.location.y, this.planet2.location.y, distanceExplored / this.length));
             ctx.lineWidth = 6;
             ctx.strokeStyle = 'yellow';
             ctx.stroke();
@@ -143,4 +144,12 @@ Path.prototype.getOppositePlanet = function (planet) {
 
 Path.prototype.hasPlanet = function (planet) {
     return this.planet1 == planet || this.planet2 == planet ;
+}
+
+// Make sure that the planet 1 is the new planet, and planet 2 is the non-explored other planet
+Path.prototype.fixForOwner = function (primaryPlanet) {
+    if (primaryPlanet != this.planet1) {
+        this.planet2 = this.planet1;
+        this.planet1 = primaryPlanet;
+    }
 }

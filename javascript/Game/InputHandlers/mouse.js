@@ -13,6 +13,8 @@ Game.InputHandler.Mouse = {
 
         var self = this;
 
+        this.player = null;
+
         canvas.onmousemove = function (e) {
 
             var xLoc = e.x - self.startCoords.x - ctx.xLoc;
@@ -64,6 +66,9 @@ Game.InputHandler.Mouse = {
 
             self.MouseClickUIHanlder(self.location.dx, self.location.dy);
         }
+    },
+    setPlayer: function (player) {
+        this.player = player;
     }
 }
 
@@ -73,7 +78,7 @@ Game.InputHandler.Mouse.MouseDownUIHandler = function (x, y) {
         return;
     }
 
-    var Player = Game.activePlayer;
+    var Player = Game.InputHandler.Mouse.player;
     var resultClicked = false;
 
     // This should prob be pushed into the player object
